@@ -1,0 +1,23 @@
+name: do cronjob 1 everyday
+
+on:
+  schedule:
+    - cron: "0 1 * * *"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 720
+    steps:
+    - uses: actions/checkout@master
+    #- name: docker registry login
+    #  run: echo "${{  secrets.DOCKER_CONTAINER_REGISTRY_TOKEN }}" | docker login ghcr.io --username admicro --password-stdin
+    
+    - name: Run task
+      if: success()
+      run: |
+        docker run \
+        -e SITE_NAME=23webhosting.xxx \
+        -e SITE_TOKEN="${{ secrets.token }}" \
+        -e JOB_NAME="${{ secrets.jobName_1 }}" \
+        ghcr.io/admicro/hhwjob:latest
